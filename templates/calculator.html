@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="booking-title">
+<h1>Carbon Footprint Calculator</h1>
+<p>Use this tool to calculate your carbon footprint based on your energy usage and travel habits.</p>
+</div>
+<form method="post" action="/calculator">
+    <div>
+        <label for="electricity">Electricity Usage (kWh per month):</label>
+        <input type="number" id="electricity" name="electricity" step="0.1" required>
+    </div>
+    <div>
+        <label for="gas">Gas Usage (therms per month):</label>
+        <input type="number" id="gas" name="gas" step="0.1" required>
+    </div>
+    <div>
+        <label for="miles">Miles Driven (per month):</label>
+        <input type="number" id="miles" name="miles" step="0.1" required>
+    </div>
+    <div>
+        <label for="flights">Number of Flights (per year):</label>
+        <input type="number" id="flights" name="flights" required>
+    </div>
+    <button class="button-1" type="submit">Calculate</button>
+</form>
+
+{% if result %}
+    <h2>Your Carbon Footprint</h2>
+    <p><strong>Total Emissions:</strong> {{ result }} kg CO<sub>2</sub> per year</p>
+{% endif %}
+{% endblock %}

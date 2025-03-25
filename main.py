@@ -12,7 +12,7 @@ app.secret_key = 'secret'
 # Connect Database
 def connect_db():
     conn = connect('database.db')
-    conn.execute('CREATE TABLE IF NOT EXISTS users (name TEXT, password TEXT, email TEXT)')
+    conn.execute('CREATE TABLE IF NOT EXISTS users (name TEXT, password TEXT, email TEXT, address TEXT)')
     return conn
 
 # Insert Data
@@ -81,6 +81,7 @@ def login():
         if user and checkpw(password.encode('utf-8'), user[1]):
             session['username'] = name
             session['email'] = user[2]
+            session['address'] = user[3]
             flash('Logged in', 'success')
             return redirect(url_for('index'))
         else:
@@ -101,14 +102,34 @@ def profile():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        if email and password:
+        address = request.form['address']
+        if email and password and address:
             hash_pw = hashpw(password.encode('utf-8'), gensalt())
             conn = connect_db()
-            conn.execute('UPDATE users SET email = ?, password = ? WHERE name = ?', (email, hash_pw, session['username']))
+            conn.execute('UPDATE users SET email = ?, password = ?, address = ? WHERE name = ?', (email, hash_pw, address, session['username']))
             conn.commit()
             conn.close()
-            flash('Email and password updated', 'success')
+            flash('Email, password, and address updated', 'success')
             session['email'] = email
+            session['address'] = address
+            return redirect(url_for('profile'))
+        elif email and address:
+            conn = connect_db()
+            conn.execute('UPDATE users SET email = ?, address = ? WHERE name = ?', (email, address, session['username']))
+            conn.commit()
+            conn.close()
+            flash('Email and address updated', 'success')
+            session['email'] = email
+            session['address'] = address
+            return redirect(url_for('profile'))
+        elif password and address:
+            hash_pw = hashpw(password.encode('utf-8'), gensalt())
+            conn = connect_db()
+            conn.execute('UPDATE users SET password = ?, address = ? WHERE name = ?', (hash_pw, address, session['username']))
+            conn.commit()
+            conn.close()
+            flash('Password and address updated', 'success')
+            session['address'] = address
             return redirect(url_for('profile'))
         elif email:
             conn = connect_db()
@@ -126,6 +147,14 @@ def profile():
             conn.close()
             flash('Password updated', 'success')
             return redirect(url_for('profile'))
+        elif address:
+            conn = connect_db()
+            conn.execute('UPDATE users SET address = ? WHERE name = ?', (address, session['username']))
+            conn.commit()
+            conn.close()
+            flash('Address updated', 'success')
+            session['address'] = address
+            return redirect(url_for('profile'))
         return redirect(url_for('profile'))
     if 'username' in session:
         return render_template('profile.html')
@@ -138,7 +167,16 @@ def profile():
 def booking():
     if request.method == "POST":
         if 'username' in session:
-        # Get form data
+            # Check if the user already has a booking
+            conn = connect_db()
+            cursor = conn.execute('SELECT * FROM bookings WHERE name = ?', (session['username'],))
+            existing_booking = cursor.fetchone()
+            conn.close()
+
+            if existing_booking:
+                flash('You already have a booking. Please delete it before creating a new one.', 'danger')
+                return redirect(url_for('booking'))
+            # Get form data
             name = session['username']
             fullname = request.form['name']
             email = request.form['email']
@@ -162,12 +200,34 @@ def booking():
         else:
             flash('You must be logged in to make a booking.', 'danger')
             return redirect(url_for('login'))
-    else:
+
+    elif request.method == "GET":
         if 'username' in session:
-            return render_template("booking.html")
-        else: 
-            flash('You must be logged in to create bookings.', 'danger')
+            # Retrieve booking details for the logged-in user
+            conn = connect_db()
+            cursor = conn.execute('SELECT * FROM bookings WHERE name = ?', (session['username'],))
+            booking = cursor.fetchone()
+            conn.close()
+
+            # Pass booking details to the template
+            if booking:
+                booking_data = {
+                    'name': booking[1],
+                    'email': booking[3],
+                    'phone': booking[4],
+                    'date': booking[5],
+                    'time': booking[6],
+                    'address': booking[7],
+                    'message': booking[8]
+                }
+                return render_template('booking.html', booking=booking_data)
+            else:
+                #flash('No bookings found.', 'danger')
+                return render_template('booking.html', booking=None)
+        else:
+            flash('You must be logged in to view bookings.', 'danger')
             return redirect(url_for('login'))
+
 
 # Delete Booking
 @app.route("/delete-booking", methods=["POST"])
@@ -193,6 +253,26 @@ def deletebooking():
         flash('You must be logged in to delete a booking.', 'danger')
         return redirect(url_for('login'))
 
+@app.route('/calculator', methods=['GET', 'POST'])
+def calculator():
+    result = None
+    if request.method == 'POST':
+        # Get form data
+        electricity = float(request.form['electricity'])  # kWh per month
+        gas = float(request.form['gas'])  # therms per month
+        miles = float(request.form['miles'])  # miles driven per month
+        flights = int(request.form['flights'])  # number of flights per year
+
+        # Carbon footprint calculations (approximate values)
+        electricity_emissions = electricity * 0.453  # kg CO2 per kWh
+        gas_emissions = gas * 5.3  # kg CO2 per therm
+        miles_emissions = miles * 0.404  # kg CO2 per mile
+        flights_emissions = flights * 1100  # kg CO2 per flight
+
+        # Total annual emissions
+        result = round((electricity_emissions + gas_emissions + miles_emissions) * 12 + flights_emissions, 2)
+
+    return render_template('calculator.html', result=result)
     
 # Run Flask App
 if __name__ == '__main__':

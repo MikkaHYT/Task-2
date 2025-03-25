@@ -35,16 +35,23 @@ header {
     margin-right: 15px;
 }
 
+/* Navigation Bar Styles */
+.nav-bar {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    justify-content: flex-end; /* Align items to the right */
+    gap: 20px; /* Add spacing between buttons */
+}
+
 .nav-bar ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 20px;
+    display: flex; /* Use flexbox for the list */
+    list-style: none; /* Remove bullet points */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
 }
 
 .nav-bar ul li {
-    display: inline;
+    margin: 0; /* Remove default margin */
 }
 
 .nav-bar ul li a {
@@ -60,14 +67,31 @@ header {
     background-color: #005a9e;
 }
 
+/* Logout Button Styling */
+/* Ensure the logout form aligns with the other nav items */
+.logout-form {
+    position: relative;
+    top: -5px;
+    left: 10px;
+    display: inline-block; /* Make the form behave like an inline element */
+    margin: 0; /* Remove any default margin */
+    padding: 0; /* Remove any default padding */
+}
+
+/* Style the logout button to match the other nav links */
 .logout-form button {
     background-color: #ff4d4d;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 10px 15px; /* Match the padding of the nav links */
     border-radius: 5px;
+    font-weight: bold;
+    font-size: 16px; /* Match the font size of the nav links */
     cursor: pointer;
     transition: background-color 0.3s;
+    text-align: center; /* Center the text */
+    display: inline-block; /* Make the button behave like an inline element */
+    line-height: 1; /* Ensure consistent vertical alignment */
 }
 
 .logout-form button:hover {
@@ -162,8 +186,10 @@ footer {
 
 #flash {
     position: absolute;
+    /* 
     top: 465px;
     right: 1050px;
+    */
     animation: fadeOut 1.5s forwards 1.5s;
 }
 
@@ -195,4 +221,118 @@ footer {
 .button-1:active {
     background-color: #004578;
     transform: scale(0.95);
+}
+
+/* Carbon Footprint Calculator Styles */
+form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form div {
+    margin-bottom: 15px;
+}
+
+form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #0078d4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #005a9e;
+}
+
+#profile-info {
+    text-align: center;
+}
+
+
+
+#booking-title {
+    text-align: center;
+}
+
+#view-booking {
+    text-align: center;
+}
+
+/* General Section Styling */
+.info-section {
+    background-color: #f4f4f4;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    text-align: left;
+}
+
+.info-section h2 {
+    color: #004578;
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.info-section p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.info-section ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.info-section ul li {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+/* Styled Hyperlinks */
+.styled-link {
+    color: #0078d4;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s, text-shadow 0.3s;
+}
+
+.styled-link:hover {
+    color: #005a9e;
+    text-shadow: 0 0 5px rgba(0, 120, 212, 0.5);
+}
+
+/* Center the entire page content */
+#index-info {
+    margin: 50px auto;
+    max-width: 900px;
+    text-align: center;
 }

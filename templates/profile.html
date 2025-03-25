@@ -6,6 +6,7 @@
             <h2>Profile</h2>
             <p>Username: {{ session['username'] }}</p>
             <p>Email: {{ session['email'] }}</p>
+            <p>Address: {{ session['address'] }}</p>
         </section>
         <section id="edit">
             <h2>Edit Profile</h2>
@@ -16,6 +17,9 @@
                 <br> <br>
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" value="{{ session['password'] }}">
+                <br> <br>
+                <label for="address">Address:</label>
+                <input type="address" id="address" name="address" value="{{ session['address'] }}">
                 <br> <br>
                 <button id="password" type="submit">Update</button>
             </form>

@@ -2,7 +2,9 @@
 
 {% block content %}
 
+<div id="booking-title" class="booking-title">
 <h1>Book a Consultation</h1>
+</div>
 <form method="post" action="/bookings">
     
     <div>
@@ -37,7 +39,11 @@
     <div>
         <br>
         <label for="address">Address:</label>
-        <input type="address" id="address" name="address" required>
+        {% if session.address %}
+            <input type="text" id="address" name="address" value="{{ session.address }}" readonly>
+        {% else %}
+            <input type="text" id="address" name="address" required>
+        {% endif %}
         <br>
     </div>
     <div>
@@ -50,6 +56,21 @@
     <button class="button-1" type="submit">Submit</button>
 </form>
 
+<div id="view-booking" class="view-booking">
+    {% if booking %}
+        <h2>Your Booking Details</h2>
+        <p><strong>Name:</strong> {{ booking.name }}</p>
+        <p><strong>Email:</strong> {{ booking.email }}</p>
+        <p><strong>Phone:</strong> {{ booking.phone }}</p>
+        <p><strong>Date:</strong> {{ booking.date }}</p>
+        <p><strong>Time:</strong> {{ booking.time }}</p>
+        <p><strong>Address:</strong> {{ booking.address }}</p>
+        <p><strong>Additional Information:</strong> {{ booking.message }}</p>
+    {% else %}
+        <h2>No Booking Found</h2>
+        <p>You have not made any bookings yet. :(</p>
+    {% endif %}
+</div>
 <br> <br>
 <form method="post" action="/delete-booking">
     <button class="button-1" type="submit" class="delete-button">Delete Booking</button>
