@@ -2,8 +2,8 @@
 
 {% block content %}
 <div id="booking-title">
-<h1>Carbon Footprint Calculator</h1>
-<p>Use this tool to calculate your carbon footprint based on your energy usage and travel habits.</p>
+    <h1>Carbon Footprint Calculator</h1>
+    <p>Use this tool to calculate your carbon footprint based on your energy usage and travel habits.</p>
 </div>
 <form method="post" action="/calculator">
     <div>
@@ -27,6 +27,46 @@
 
 {% if result %}
     <h2>Your Carbon Footprint</h2>
-    <p><strong>Total Emissions:</strong> {{ result }} kg CO<sub>2</sub> per year</p>
+    <div>
+        <label for="timeframe">Timeframe:</label>
+        <select id="timeframe" name="timeframe">
+            <option value="year">Per Year</option>
+            <option value="month">Per Month</option>
+        </select>
+    </div>
+    <p><strong>Total Emissions:</strong> <span id="total-emissions">{{ result }}</span> kg CO<sub>2</sub> <span id="emission-timeframe">per year</span></p>
+    <div>
+        <h3>Breakdown of Emissions:</h3>
+        <ul>
+            <li><strong>Electricity:</strong> <span id="electricity-emissions">{{ electricity_emissions }}</span> kg CO<sub>2</sub> <span class="emission-timeframe">per year</span></li>
+            <li><strong>Gas:</strong> <span id="gas-emissions">{{ gas_emissions }}</span> kg CO<sub>2</sub> <span class="emission-timeframe">per year</span></li>
+            <li><strong>Driving:</strong> <span id="driving-emissions">{{ driving_emissions }}</span> kg CO<sub>2</sub> <span class="emission-timeframe">per year</span></li>
+            <li><strong>Flights:</strong> <span id="flight-emissions">{{ flight_emissions }}</span> kg CO<sub>2</sub> <span class="emission-timeframe">per year</span></li>
+        </ul>
+    </div>
+    <script>
+        const totalResult = parseFloat("{{ result|default(0) }}");
+        const electricityEmissions = parseFloat("{{ electricity_emissions|default(0) }}");
+        const gasEmissions = parseFloat("{{ gas_emissions|default(0) }}");
+        const drivingEmissions = parseFloat("{{ driving_emissions|default(0) }}");
+        const flightEmissions = parseFloat("{{ flight_emissions|default(0) }}");
+
+        document.getElementById('timeframe').addEventListener('change', function () {
+            const isPerYear = this.value === 'year';
+            const multiplier = isPerYear ? 1 : 1 / 12;
+
+            document.getElementById('total-emissions').textContent = (totalResult * multiplier).toFixed(2);
+            document.getElementById('emission-timeframe').textContent = isPerYear ? 'per year' : 'per month';
+
+            document.querySelectorAll('.emission-timeframe').forEach((element) => {
+                element.textContent = isPerYear ? 'per year' : 'per month';
+            });
+
+            document.getElementById('electricity-emissions').textContent = (electricityEmissions * multiplier).toFixed(2);
+            document.getElementById('gas-emissions').textContent = (gasEmissions * multiplier).toFixed(2);
+            document.getElementById('driving-emissions').textContent = (drivingEmissions * multiplier).toFixed(2);
+            document.getElementById('flight-emissions').textContent = (flightEmissions * multiplier).toFixed(2);
+        });
+    </script>
 {% endif %}
 {% endblock %}

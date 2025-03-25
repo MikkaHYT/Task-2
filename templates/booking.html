@@ -40,7 +40,7 @@
         <br>
         <label for="address">Address:</label>
         {% if session.address %}
-            <input type="text" id="address" name="address" value="{{ session.address }}" readonly>
+            <input type="text" id="address" name="address" value="{{ session.address }}" readonly style="color: grey;">
         {% else %}
             <input type="text" id="address" name="address" required>
         {% endif %}

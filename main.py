@@ -256,6 +256,11 @@ def deletebooking():
 @app.route('/calculator', methods=['GET', 'POST'])
 def calculator():
     result = None
+    electricity_emissions_annual = 0
+    gas_emissions_annual = 0
+    driving_emissions_annual = 0
+    flight_emissions_annual = 0
+
     if request.method == 'POST':
         # Get form data
         electricity = float(request.form['electricity'])  # kWh per month
@@ -269,11 +274,29 @@ def calculator():
         miles_emissions = miles * 0.404  # kg CO2 per mile
         flights_emissions = flights * 1100  # kg CO2 per flight
 
+        # Annual emissions for each category
+        electricity_emissions_annual = round(electricity_emissions * 12, 2)
+        gas_emissions_annual = round(gas_emissions * 12, 2)
+        driving_emissions_annual = round(miles_emissions * 12, 2)
+        flight_emissions_annual = round(flights_emissions, 2)
+        
         # Total annual emissions
         result = round((electricity_emissions + gas_emissions + miles_emissions) * 12 + flights_emissions, 2)
 
-    return render_template('calculator.html', result=result)
+    # Render the template for both GET and POST requests
+    return render_template(
+        'calculator.html',
+        result=result,
+        electricity_emissions=electricity_emissions_annual,
+        gas_emissions=gas_emissions_annual,
+        driving_emissions=driving_emissions_annual,
+        flight_emissions=flight_emissions_annual
+    )
+
     
 # Run Flask App
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
