@@ -30,7 +30,7 @@ def select_db(name):
     conn.close()
     return data
 
-# Create a new table for bookings
+# Create a new table for bookings (only needed once)
 def create_bookings_table():
     conn = connect_db()
     conn.execute('''
@@ -133,6 +133,7 @@ def profile():
         flash('Login to view profile', 'danger')
         return redirect(url_for('login'))
 
+# Bookings
 @app.route("/bookings", methods=["GET", "POST"])
 def booking():
     if request.method == "POST":
@@ -148,7 +149,6 @@ def booking():
             message = request.form.get('message', '')  # Optional field
 
             # Save data to the database
-            create_bookings_table()
             conn = connect_db()
             conn.execute('''
                 INSERT INTO bookings (name, fullname, email, phone, date, time, address, message)
@@ -169,6 +169,7 @@ def booking():
             flash('You must be logged in to create bookings.', 'danger')
             return redirect(url_for('login'))
 
+# Delete Booking
 @app.route("/delete-booking", methods=["POST"])
 def deletebooking():
     if 'username' in session:
@@ -177,11 +178,12 @@ def deletebooking():
         # Check if the user has a booking
         cursor = conn.execute('SELECT * FROM bookings WHERE name = ?', (name,))
         booking = cursor.fetchone()
+        # If they do not, tell them they don't have one
         if not booking:
             flash('No booking found to delete.', 'danger')
             conn.close()
             return redirect(url_for('booking'))
-        else:
+        else: # However if they do, then delete it from the database using their username to identify
             conn.execute('DELETE FROM bookings WHERE name = ?', (name,))
             conn.commit()
             conn.close()
