@@ -32,7 +32,7 @@ def select_db(name):
 
 # Create a new table for bookings (only needed once)
 def create_bookings_table():
-    conn = connect_db()
+    conn = connect('database.db')
     conn.execute('''
         CREATE TABLE IF NOT EXISTS bookings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,7 +48,6 @@ def create_bookings_table():
     ''')
     conn.commit()
     conn.close()
-
 
 
 # __Routes__

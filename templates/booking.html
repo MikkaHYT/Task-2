@@ -5,6 +5,8 @@
 <div id="booking-title" class="booking-title">
 <h1>Book a Consultation</h1>
 </div>
+
+<!-- 
 <form method="post" action="/bookings">
     
     <div>
@@ -55,21 +57,75 @@
     <br>
     <button class="button-1" type="submit">Submit</button>
 </form>
+-->
 
-<div id="view-booking" class="view-booking">
-    {% if booking %}
-        <h2>Your Booking Details</h2>
-        <p><strong>Name:</strong> {{ booking.name }}</p>
-        <p><strong>Email:</strong> {{ booking.email }}</p>
-        <p><strong>Phone:</strong> {{ booking.phone }}</p>
-        <p><strong>Date:</strong> {{ booking.date }}</p>
-        <p><strong>Time:</strong> {{ booking.time }}</p>
-        <p><strong>Address:</strong> {{ booking.address }}</p>
-        <p><strong>Additional Information:</strong> {{ booking.message }}</p>
-    {% else %}
-        <h2>No Booking Found</h2>
-        <p>You have not made any bookings yet. :(</p>
-    {% endif %}
+<div style="display: flex; justify-content: space-between;">
+    <div id="view-booking" class="view-booking" style="width: 48%;">
+        {% if booking %}
+            <h2>Your Booking Details</h2>
+            <p><strong>Name:</strong> {{ booking.name }}</p>
+            <p><strong>Email:</strong> {{ booking.email }}</p>
+            <p><strong>Phone:</strong> {{ booking.phone }}</p>
+            <p><strong>Date:</strong> {{ booking.date }}</p>
+            <p><strong>Time:</strong> {{ booking.time }}</p>
+            <p><strong>Address:</strong> {{ booking.address }}</p>
+            <p><strong>Additional Information:</strong> {{ booking.message }}</p>
+        {% else %}
+            <h2>No Booking Found</h2>
+            <p>You have not made any bookings yet. :(</p>
+        {% endif %}
+    </div>
+    <div style="width: 48%;">
+        <form method="post" action="/bookings">
+            <div>
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" required>
+                <br>
+            </div>
+            <div>
+                <br>
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required>
+                <br>
+            </div>
+            <div>
+                <br>
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+                <br>
+            </div>
+            <div>
+                <br>
+                <label for="date">Preferred Date:</label>
+                <input type="date" id="date" name="date" required>
+                <br>
+            </div>
+            <div>
+                <br>
+                <label for="time">Preferred Time:</label>
+                <input type="time" id="time" name="time" required>
+                <br>
+            </div>
+            <div>
+                <br>
+                <label for="address">Address:</label>
+                {% if session.address %}
+                    <input type="text" id="address" name="address" value="{{ session.address }}" readonly style="color: grey;">
+                {% else %}
+                    <input type="text" id="address" name="address" required>
+                {% endif %}
+                <br>
+            </div>
+            <div>
+                <br>
+                <label for="message">Additional Information:</label>
+                <textarea id="message" name="message" rows="4"></textarea>
+                <br>
+            </div>
+            <br>
+            <button class="button-1" type="submit">Submit</button>
+        </form>
+    </div>
 </div>
 <br> <br>
 <form method="post" action="/delete-booking">
